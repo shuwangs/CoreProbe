@@ -13,8 +13,8 @@ namespace coreprobe
     class SDLController final : public IDevice
     {
     public:
-        SDLController(int deviceIndex);
-        ~SDLController() override;
+        explicit SDLController(SDL_JoystickID instanceId);       
+        ~ SDLController() override;
 
         SDLController(const SDLController&) = delete;
         SDLController& operator=(const SDLController&) = delete;
