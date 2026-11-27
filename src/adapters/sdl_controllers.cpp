@@ -42,12 +42,16 @@ namespace coreprobe
     }
 
     DeviceInfo SDLController::getDeviceInfo() const
-    {
-        DeviceInfo info;
+    {        
+        DeviceInfo info{};
+        info.type = DeviceType::Controller;
+
         if (gamepad_ != nullptr) {
-            info.name = SDL_GetGamepadName(gamepad_);
-            info.type = DeviceType::Controller;
-            // Vendor ID and Product ID can be retrieved if needed
+            const char* name = SDL_GetGamepadName(gamepad_);
+
+            if (name != nullptr) {
+                info.name = name;
+            }
         }
         return info;
     }
