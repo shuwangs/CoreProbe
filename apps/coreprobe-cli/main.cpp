@@ -87,33 +87,18 @@ int main(int argc, char* argv[])
                         const Uint64 startTime = SDL_GetTicks();
 
                         while(SDL_GetTicks() - startTime < 10000) {
-                            SDL_Event event;
+                            const auto events = controller.pollEvents();
 
-                            if (!SDL_WaitEventTimeout(&event, 100)) {
-                                continue; // No event received within the timeout
-                            }
-
-                         
-                            if (event.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN ||
-                                event.type == SDL_EVENT_GAMEPAD_BUTTON_UP) {
-
-                                if (event.gbutton.which != id) {
-                                    continue;
-                                }
-
+                            for (const auto& event : events) {
                                 const char* action =
-                                    event.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN
-                                        ? "button_down"
-                                        : "button_up";
+                                event.value == 1 ? "pressed" : "released";
 
-                                std::cout << action
-                                        << " button="
-                                        << static_cast<int>(event.gbutton.button)
-                                        << std::endl;
+                                std::cout << action 
+                                    <<" button= " << event.code
+                                    << " on device_id= " << event.device_id << '\n';
                             }
-
+                            SDL_Delay(10); // Small delay to avoid excessive CPU usage
                         }
-
 
                
                     }

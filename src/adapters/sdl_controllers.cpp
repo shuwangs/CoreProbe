@@ -60,4 +60,34 @@ namespace coreprobe
     {
         return status_;
     }
+
+    std::vector<Event> SDLController::pollEvents() 
+    {
+        std::vector<Event> events;
+
+        if (gamepad_ == nullptr) {
+            return events; // No gamepad connected
+        }
+
+        SDL_Event sdlEvent;
+        while(SDL_PollEvent(&sdlEvent)) {
+            if (sdlEvent.type != SDL_EVENT_GAMEPAD_BUTTON_DOWN &&
+                sdlEvent.type != SDL_EVENT_GAMEPAD_BUTTON_UP) {
+                continue; // Not a gamepad button event
+            }
+
+            if (sdlEvent.gbutton.which != instanceId_) {
+                continue; // Event is not for this gamepad
+            }
+
+            Event event{};
+            event.device_id = instanceId_;
+            event.type = EventType::Button;
+            event.code = sdlEvent.gbutton.button;
+            event.value = (sdlEvent.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN) ? 1 : 0;
+            events.push_back(event);
+            
+        }
+        return events;
+    }
 }
